@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="中学生の定期試験対策に特化した歴史・地理の知識インプット＆アウトプット学習ツール。デジタル赤シートと記述対策AI判定機能搭載。">
+  <title>ChronoQuest | 中学社会科定期テスト対策ツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- アプリヘッダー -->
+    <header class="app-header">
+      <div class="logo">
+        <div class="logo-icon">Q</div>
+        <div class="logo-text">
+          <h1>ChronoQuest</h1>
+          <p>Social Studies Lab</p>
+        </div>
+      </div>
+      
+      <div class="header-stats">
+        <div class="stat-badge" id="badge-progress">
+          全体進捗: <span id="stat-progress">0%</span>
+        </div>
+        <div class="stat-badge" id="badge-score">
+          社会科スコア: <span id="stat-score">0</span> pts
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main">
+      
+      <!-- ================= 画面1: ダッシュボード（クエスト選択） ================= -->
+      <section class="dashboard-view" id="dashboard-view">
+        <div class="welcome-banner">
+          <div class="welcome-banner-content">
+            <h2>歴史と地理をハックして、<br>定期試験で高得点を掴み取ろう！</h2>
+            <p>教科書の大切なビジュアル資料を読み解き、「インプット（デジタル赤シート）」と「アウトプット（一問一答・記述テスト）」で完璧な知識を定着させる社会科専用ラボ。</p>
+          </div>
+        </div>
+        
+        <!-- 教科選択用スイッチタブ -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+          <button class="btn sub-btn active" id="btn-sub-history" style="--era-color: var(--color-blue); --era-color-glow: var(--color-blue-glow);">
+            📜 歴史クエスト
+          </button>
+          <button class="btn sub-btn" id="btn-sub-geography" style="--era-color: var(--color-green); --era-color-glow: var(--color-green-glow); background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--panel-border);">
+            🗺️ 地理クエスト
+          </button>
+        </div>
+
+        <div class="quest-grid" id="quest-grid">
+          <!-- JSでクエストカードを注入 -->
+        </div>
+      </section>
+
+      <!-- ================= 画面2: 学習ワークスペース（各クエスト内） ================= -->
+      <section class="workspace-view" id="workspace-view">
+        <div class="workspace-header">
+          <div class="workspace-title-area">
+            <button class="back-btn" id="btn-back-dashboard" title="ダッシュボードへ戻る">←</button>
+            <h2 id="workspace-era-title">時代タイトル</h2>
+          </div>
+          
+          <!-- 学習モード切替タブ -->
+          <nav class="nav-tabs">
+            <button class="tab-btn active" id="tab-input">
+              📖 暗記インプット
+            </button>
+            <button class="tab-btn" id="tab-output">
+              ⚔ 選択クイズ
+            </button>
+            <button class="tab-btn" id="tab-essay">
+              🎯 記述クエスト
+            </button>
+          </nav>
+        </div>
+
+        <!-- ----- モードA: インプット（赤シート・スライド） ----- -->
+        <div class="tab-content active" id="content-input">
+          <div class="input-container">
+            <!-- ビジュアル絵巻スライダー -->
+            <div class="visual-panel">
+              <div class="slider-image-wrapper" id="slide-image-container">
+                <!-- SVGまたは画像が入る -->
+              </div>
+              <div class="slider-controls">
+                <button class="action-btn" id="btn-prev-slide">前へ</button>
+                <div class="slider-dots" id="slider-dots">
+                  <!-- ドットインジケータ -->
+                </div>
+                <button class="btn" id="btn-next-slide">
+                  次へ <span style="font-family: var(--font-display)">→</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 解説・赤シートパネル -->
+            <div class="study-panel">
+              <div>
+                <h3 class="study-title" id="slide-study-title">解説の見出し</h3>
+                <div class="study-text-card" id="slide-study-text">
+                  <!-- 解説テキスト -->
+                </div>
+              </div>
+              
+              <div class="red-sheet-controller">
+                <div class="controller-info">
+                  進捗: <span id="slide-num-current">1</span> / <span id="slide-num-total">3</span> スライド
+                </div>
+                <button class="sheet-toggle-btn" id="btn-toggle-redsheet">
+                  赤シートを外す
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ----- モードB: アウトプット（選択クイズ） ----- -->
+        <div class="tab-content" id="content-output">
+          <div class="output-container">
+            
+            <!-- クイズプレイ画面 -->
+            <div class="quiz-card" id="quiz-play-box">
+              <div class="quiz-header">
+                <div class="quiz-indicator">定期テスト一問一答</div>
+                <div class="quiz-timer">問題 <span id="quiz-current-num">1</span> / <span id="quiz-total-num">4</span></div>
+              </div>
+              
+              <div class="quiz-question-box">
+                <h3 id="quiz-question-title">ここに問題文が表示されます。</h3>
+              </div>
+              
+              <div class="quiz-options-list" id="quiz-options-list">
+                <!-- 選択肢ボタン -->
+              </div>
+              
+              <div class="quiz-explanation" id="quiz-explanation">
+                <!-- 解説エリア -->
+              </div>
+              
+              <div class="action-row">
+                <div style="flex-grow:1;"></div>
+                <button class="btn" id="btn-submit-quiz" disabled>判定する</button>
+              </div>
+            </div>
+
+            <!-- クイズ完了結果画面 -->
+            <div class="quiz-card result-panel" id="quiz-result-box">
+              <div class="result-glow-circle">
+                <div class="result-score" id="result-score-current">0</div>
+                <div class="result-score-max">/ <span id="result-score-total">4</span></div>
+              </div>
+              
+              <div class="result-message">
+                <h3 id="result-msg-title">結果タイトル</h3>
+                <p id="result-msg-desc">結果の詳細フィードバックメッセージ</p>
+              </div>
+              
+              <div style="display:flex; gap:1rem;">
+                <button class="btn btn-secondary" id="btn-retry-quiz">もう一度解く</button>
+                <button class="btn" id="btn-go-essay">記述クエストへ挑戦！</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ----- モードC: 記述（表現・説明問題） ----- -->
+        <div class="tab-content" id="content-essay">
+          <div class="output-container">
+            <div class="quiz-card">
+              <div class="desc-quest-box">
+                <div class="desc-prompt">
+                  <h4>💡 定期試験・記述問題対策</h4>
+                  <p id="essay-question">ここに記述問題が表示されます。</p>
+                </div>
+                
+                <div class="desc-textarea-wrapper">
+                  <textarea class="desc-textarea" id="essay-input-area" placeholder="ここにあなたの説明を書いてください（最低10文字以上）..."></textarea>
+                  <div class="desc-word-count" id="essay-text-count">0 文字</div>
+                </div>
+                
+                <div class="action-row">
+                  <div style="font-size:0.8rem; color:var(--text-secondary);">
+                    ※解答の中に重要な社会科用語が含まれているかAI自動評価します。
+                  </div>
+                  <button class="btn btn-purple" id="btn-submit-essay" disabled>回答を判定する</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 記述結果画面 -->
+            <div class="desc-eval-result" id="essay-result-box">
+              <div class="eval-score-header">
+                <h3>判定結果</h3>
+                <div class="eval-rank" id="essay-rank-val">S</div>
+              </div>
+              
+              <div>
+                <strong style="color:var(--color-purple);">検出された歴史・地理重要キーワード：</strong>
+                <div class="eval-keywords-list" id="essay-keywords-list">
+                  <!-- キーワードバッジ -->
+                </div>
+              </div>
+              
+              <div class="eval-feedback-text">
+                <strong style="color:var(--text-primary);">評価フィードバック：</strong>
+                <p id="essay-feedback-text" style="color:var(--text-secondary); margin-top:0.35rem;"></p>
+              </div>
+              
+              <div class="model-answer-box">
+                <strong style="color:var(--color-purple);">定期テスト用 模範解答：</strong>
+                <p id="essay-model-answer" style="margin-top:0.35rem;"></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- アプリフッター -->
+    <footer class="app-footer">
+      <p>&copy; 2026 ChronoQuest - 中学社会科定期テスト対策ツール All Rights Reserved.</p>
+    </footer>
+
+  </div>
+
+  <!-- 分割データベースのロード -->
+  <script src="js/data-history.js"></script>
+  <script src="js/data-geography.js"></script>
+  <!-- メインアプリケーションロジックのロード -->
+  <script src="js/app.js"></script>
+</body>
+</html>
